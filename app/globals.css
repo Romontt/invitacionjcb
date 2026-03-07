@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-wedding: #06140d;   /* Verde Esmeralda Profundo */
+  --accent-gold: #d1b06b;  /* Dorado Champagne */
+  --text-light: #f7f5f0;   /* Crema Suave */
+}
+
+body {
+  background-color: var(--bg-wedding);
+  color: var(--text-light);
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Clases auxiliares para fuentes */
+.font-cursive { font-family: 'Great Vibes', cursive; }
+.font-serif { font-family: 'Playfair Display', serif; }
+
+/* Animación de brillo para el dorado */
+.gold-gradient {
+  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
