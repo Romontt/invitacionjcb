@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Users, Shirt, Music, Instagram, Gift, Heart, Volume2, VolumeX } from 'lucide-react';
+import { Clock, MapPin, Users, Shirt, Music, Instagram, Gift, Heart, Volume2, VolumeX, Star } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // --- CONFIGURACIÓN SUPABASE ---
@@ -77,64 +77,89 @@ export default function InvitacionPremium() {
           </motion.div>
         )}
 
-        {/* --- PASO 2: INVITACIÓN --- */}
-        {paso === 'invitacion' && (
-          <motion.div 
-            key="invitacion"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="pb-20"
-          >
-            {/* Hero */}
-            <section className="h-screen flex flex-col items-center justify-center text-center relative px-6">
-               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.5 }}>
-                 <h2 className="font-cursive text-8xl md:text-[10rem] text-[#d1b06b] leading-none mb-6">C&J</h2>
-                 <p className="font-serif text-2xl md:text-3xl italic tracking-widest text-stone-200">19 . 12 . 2026</p>
-               </motion.div>
-               <div className="absolute bottom-10 animate-pulse text-[#d1b06b]/40 uppercase text-[9px] tracking-[0.5em]">Desliza para ver más</div>
-            </section>
+/* --- PASO 2: CONTENIDO COMPLETO DE LA INVITACIÓN --- */
+{paso === 'invitacion' && (
+  <motion.div 
+    key="invitacion"
+    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+    className="text-[#f7f5f0] pb-20"
+  >
+    {/* Hero con Nombres Completos */}
+    <section className="h-screen flex flex-col items-center justify-center text-center px-6 relative">
+      <motion.div 
+        initial={{ y: 30, opacity: 0 }} 
+        animate={{ y: 0, opacity: 1 }} 
+        transition={{ duration: 1.5 }}
+      >
+        <span className="text-[#d1b06b] tracking-[0.5em] text-[10px] uppercase mb-4 block">Nuestra Boda</span>
+        <h2 className="font-cursive text-7xl md:text-9xl text-[#d1b06b] mb-2">Carlos & Joselyn</h2>
+        <div className="w-24 h-[1px] bg-[#d1b06b]/30 mx-auto mb-6" />
+        <p className="font-serif text-xl md:text-2xl italic tracking-widest text-stone-300">19 DE DICIEMBRE, 2026</p>
+      </motion.div>
+      <div className="absolute bottom-10 animate-pulse text-[#d1b06b]/40 text-[9px] tracking-[0.5em]">DESLIZA PARA DESCUBRIR</div>
+    </section>
 
-            {/* Grid de Información Corregido (Sin cloneElement) */}
-            <section className="py-24 max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { icon: <Clock size={28} />, t: "18:00 HRS", d: "CEREMONIA" },
-                { icon: <MapPin size={28} />, t: "LUNA AZUL", d: "UBICACIÓN" },
-                { icon: <Shirt size={28} />, t: "FORMAL", d: "DRESS CODE" },
-                { icon: <Gift size={28} />, t: "SOBRES", d: "REGALOS" }
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center p-6 bg-white/5 rounded-2xl border border-[#d1b06b]/10">
-                  <div className="text-[#d1b06b] mb-4">{item.icon}</div>
-                  <span className="text-xs font-bold tracking-widest text-[#d1b06b]">{item.t}</span>
-                  <span className="text-[9px] text-stone-500 mt-1 uppercase">{item.d}</span>
-                </div>
-              ))}
-            </section>
+    {/* Secciones Interactivas: GPS y Agenda */}
+    <section className="max-w-4xl mx-auto px-6 py-20 space-y-20">
+      
+      {/* Ubicación GPS */}
+      <div className="text-center space-y-6">
+        <MapPin className="mx-auto text-[#d1b06b]" size={32} />
+        <h3 className="font-serif text-3xl italic">Ubicación</h3>
+        <p className="text-stone-400 text-sm max-w-xs mx-auto">Luna Azul, Rita de Pococí, Limón.</p>
+        <a 
+          href="https://maps.app.goo.gl/TU_LINK_REAL" 
+          target="_blank"
+          className="inline-block px-8 py-3 border border-[#d1b06b]/40 text-[#d1b06b] rounded-full text-[10px] tracking-widest hover:bg-[#d1b06b] hover:text-[#06140d] transition-all"
+        >
+          VER EN GOOGLE MAPS
+        </a>
+      </div>
 
-            {/* Formulario RSVP */}
-            <section className="max-w-md mx-auto px-6 py-20 bg-[#05100a] rounded-3xl border border-white/5 shadow-2xl">
-              <div className="text-center mb-10">
-                <Heart className="mx-auto text-[#d1b06b] mb-4" fill="#d1b06b" size={24} />
-                <h3 className="font-serif text-3xl">Confirma tu Asistencia</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <input 
-                  type="text" 
-                  placeholder="Tu Nombre Completo"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-[#d1b06b] outline-none transition-all text-sm"
-                />
-                <button 
-                  onClick={confirmarAsistencia}
-                  disabled={enviando}
-                  className="w-full bg-[#d1b06b] text-[#06140d] font-bold py-4 rounded-xl tracking-widest text-xs hover:bg-white transition-all disabled:opacity-50"
-                >
-                  {enviando ? 'ENVIANDO...' : 'CONFIRMAR ASISTENCIA'}
-                </button>
-              </div>
-            </section>
-          </motion.div>
-        )}
+      {/* Grid de Detalles Técnicos */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {[
+          { icon: <Clock size={28} />, t: "18:00 HRS", d: "CEREMONIA" },
+          { icon: <Shirt size={28} />, t: "FORMAL", d: "DRESS CODE" },
+          { icon: <Gift size={28} />, t: "SOBRES", d: "LLUVIA DE SOBRES" },
+          { icon: <Star size={28} />, t: "AGENDA", d: "AÑADIR AL CALENDARIO" }
+        ].map((item, i) => (
+          <div key={i} className="flex flex-col items-center p-6 bg-white/5 rounded-2xl border border-white/5">
+            <div className="text-[#d1b06b] mb-4">{item.icon}</div>
+            <span className="text-xs font-bold tracking-widest text-[#d1b06b]">{item.t}</span>
+            <span className="text-[9px] text-stone-500 mt-1 uppercase">{item.d}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Formulario RSVP (Supabase) */}
+    <section className="max-w-md mx-auto px-6 py-16 bg-[#05100a] rounded-3xl border border-[#d1b06b]/10 shadow-2xl mb-20">
+      <div className="text-center mb-10">
+        <Heart className="mx-auto text-[#d1b06b] mb-4" fill="#d1b06b" size={24} />
+        <h3 className="font-serif text-3xl">Confirma tu Asistencia</h3>
+        <p className="text-[10px] text-stone-500 tracking-widest mt-2 uppercase">Favor confirmar antes del 1 de Diciembre</p>
+      </div>
+      
+      <div className="space-y-4">
+        <input 
+          type="text" 
+          placeholder="Nombre Completo"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          className="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-[#d1b06b] outline-none transition-all text-sm text-center"
+        />
+        <button 
+          onClick={confirmarAsistencia}
+          disabled={enviando}
+          className="w-full bg-[#d1b06b] text-[#06140d] font-bold py-4 rounded-xl tracking-widest text-xs hover:bg-white transition-all disabled:opacity-50"
+        >
+          {enviando ? 'PROCESANDO...' : 'CONFIRMAR ASISTENCIA'}
+        </button>
+      </div>
+    </section>
+  </motion.div>
+)}
       </AnimatePresence>
     </main>
   );
