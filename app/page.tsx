@@ -97,7 +97,8 @@ export default function InvitacionPremium() {
                       {invitado?.pases || "?"}
                    </div>
                    <h3 className="uppercase tracking-[0.2em] text-[10px] font-bold text-[#d1b06b] mb-2">Pases Asignados</h3>
-                   <p className="font-serif italic text-stone-300 text-lg">Familia {invitado?.nombre_completo || "Amigos y Familia"}</p>
+                   <p className="font-serif italic text-stone-300 text-2xl leading-relaxed max-w-[250px] mx-auto whitespace-pre-line">
+                  {invitado?.nombre_completo?.replace(' y ', ' \n & \n ') || "Amigos y Familia"}</p>
                 </div>
               </motion.div>
               <div className="absolute bottom-10 animate-bounce text-[#d1b06b]/40"><ChevronDown size={30}/></div>
