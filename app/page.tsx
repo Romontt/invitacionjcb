@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Shirt, Gift, Heart, Volume2, Camera, ChevronDown } from 'lucide-react';
+import { Clock, MapPin, Shirt, Gift, Heart, Volume2, Camera, ChevronDown, Calendar, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://spriycerzcurnhoznzzr.supabase.co';
@@ -15,6 +15,7 @@ const Countdown = () => {
     const target = new Date("December 19, 2026 18:00:00").getTime();
     const interval = setInterval(() => {
       const distance = target - new Date().getTime();
+      if (distance < 0) return clearInterval(interval);
       setTimeLeft({
         días: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hs: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -26,11 +27,18 @@ const Countdown = () => {
   }, []);
 
   return (
-    <div className="flex gap-4 justify-center mt-8 scale-90 md:scale-100">
+    <div className="flex gap-4 md:gap-8 justify-center mt-8">
       {Object.entries(timeLeft).map(([label, value]) => (
-        <div key={label} className="text-center">
-          <div className="text-[#d1b06b] text-3xl md:text-4xl font-light mb-1">{value}</div>
-          <div className="text-[10px] uppercase tracking-widest text-stone-400">{label}</div>
+        <div key={label} className="text-center group">
+          <motion.div 
+            initial={{ scale: 0.9 }} animate={{ scale: 1 }}
+            className="text-[#d1b06b] text-4xl md:text-5xl font-light mb-1 drop-shadow-md"
+          >
+            {value}
+          </motion.div>
+          <div className="text-[9px] uppercase tracking-[0.3em] text-stone-400 group-hover:text-[#d1b06b] transition-colors">
+            {label}
+          </div>
         </div>
       ))}
     </div>
@@ -40,13 +48,18 @@ const Countdown = () => {
 export default function InvitacionPremium() {
   const [paso, setPaso] = useState('landing'); 
   const [invitado, setInvitado] = useState<any>(null);
+  const [confirmado, setConfirmado] = useState(false);
+  const [cargando, setCargando] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (id) {
-      supabase.from('invitados').select('*').eq('id', id).single().then(({ data }) => setInvitado(data));
+      supabase.from('invitados').select('*').eq('id', id).single().then(({ data }) => {
+        setInvitado(data);
+        if (data?.confirmado) setConfirmado(true);
+      });
     }
   }, []);
 
@@ -55,101 +68,180 @@ export default function InvitacionPremium() {
     if (music && audioRef.current) audioRef.current.play().catch(() => {});
   };
 
+  const handleConfirmar = async () => {
+    if (!invitado) return;
+    setCargando(true);
+    const { error } = await supabase.from('invitados').update({ confirmado: true }).eq('id', invitado.id);
+    if (!error) {
+      setConfirmado(true);
+      alert("¡Gracias por confirmar! Te esperamos.");
+    }
+    setCargando(false);
+  };
+
   return (
-    <main className="min-h-screen bg-[#06140d] text-[#f7f5f0]">
+    <main className="min-h-screen bg-[#06140d] text-[#f7f5f0] selection:bg-[#d1b06b]/30 overflow-x-hidden">
       <audio ref={audioRef} src="/music.mp3" loop />
 
       <AnimatePresence mode="wait">
         {paso === 'landing' && (
-          <motion.div key="landing" exit={{ opacity: 0 }} className="h-screen flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] text-center p-6">
-            <div className="space-y-8 border border-[#d1b06b]/20 p-12 rounded-2xl bg-[#06140d]/80 backdrop-blur-md">
-              <h1 className="font-cursive text-7xl text-[#d1b06b]">Carlos & Joselyn</h1>
-              <button onClick={() => entrar(true)} className="flex items-center gap-3 px-10 py-4 bg-[#d1b06b] text-[#06140d] rounded-full mx-auto font-bold tracking-widest uppercase text-xs">
-                <Volume2 size={16} /> Abrir Invitación
+          <motion.div key="landing" exit={{ opacity: 0, scale: 1.1 }} className="h-screen flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] text-center p-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black/40" />
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+              className="relative z-10 space-y-10 border border-[#d1b06b]/20 p-16 rounded-[2rem] bg-[#06140d]/60 backdrop-blur-xl shadow-2xl"
+            >
+              <div className="space-y-2">
+                <span className="text-[#d1b06b] tracking-[0.5em] text-[10px] uppercase block mb-4">Estás invitado a</span>
+                <h1 className="font-cursive text-7xl md:text-8xl text-[#d1b06b]">Carlos & Joselyn</h1>
+              </div>
+              <button onClick={() => entrar(true)} className="flex items-center gap-4 px-12 py-5 bg-[#d1b06b] text-[#06140d] rounded-full mx-auto font-bold tracking-[0.2em] uppercase text-xs hover:bg-white hover:scale-105 transition-all shadow-lg shadow-[#d1b06b]/20">
+                <Volume2 size={18} /> Abrir Experiencia
               </button>
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
         {paso === 'invitacion' && (
-          <motion.div key="invitacion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-20">
+          <motion.div key="invitacion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-32">
             
-            {/* NUEVO HEADER VINTAGE */}
-            <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-               {/* Imagen de Fondo con Overlay */}
+            {/* HERO VINTAGE MEJORADO */}
+            <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
                <div className="absolute inset-0 z-0">
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80" className="w-full h-full object-cover opacity-40" alt="Boda" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#06140d]" />
+                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80" className="w-full h-full object-cover opacity-40 scale-105" alt="Boda" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-[#06140d]" />
                </div>
 
-               <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2 }} className="relative z-10 px-6">
-                  <span className="text-[#d1b06b] tracking-[0.4em] text-[10px] uppercase mb-6 block">19 . 12 . 2026</span>
-                  <h2 className="font-serif text-6xl md:text-9xl mb-4 font-light">Carlos <span className="text-[#d1b06b]">&</span> Joselyn</h2>
-                  <div className="w-16 h-[1px] bg-[#d1b06b]/40 mx-auto my-8" />
-                  <p className="font-serif italic text-stone-300 text-lg md:text-2xl max-w-lg mx-auto leading-relaxed">
-                    "Todos somos mortales, hasta el primer beso y la segunda copa de vino"
+               <motion.div initial={{ y: 40, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 1.5 }} className="relative z-10">
+                  <span className="text-[#d1b06b] tracking-[0.6em] text-[11px] uppercase mb-8 block">19 de Diciembre · 2026</span>
+                  <h2 className="font-serif text-7xl md:text-[11rem] mb-6 font-light leading-none">
+                    Carlos <span className="text-[#d1b06b] italic block md:inline md:mx-4">&</span> Joselyn
+                  </h2>
+                  <div className="w-24 h-[1px] bg-[#d1b06b]/50 mx-auto my-10" />
+                  <p className="font-serif italic text-stone-200 text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-lg">
+                    "Donde hay amor, hay vida."
                   </p>
-                  <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="mt-12 text-[#d1b06b]/50">
-                     <ChevronDown size={32} className="mx-auto" />
+                  <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2.5 }} className="mt-20 text-[#d1b06b]/40 flex flex-col items-center gap-2">
+                     <span className="text-[9px] tracking-[0.3em] uppercase">Desliza</span>
+                     <ChevronDown size={28} />
                   </motion.div>
                </motion.div>
             </section>
 
-            {/* CUENTA REGRESIVA CON FONDOS ONDULADOS */}
-            <section className="py-20 bg-white/5 relative">
-               <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
-                  <svg className="relative block w-full h-12" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                     <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V120c6.4,0,12.79,0,19.19,0C158.59,120,223.43,83.43,321.39,56.44Z" fill="#06140d"></path>
-                  </svg>
-               </div>
-               <div className="text-center py-10">
-                  <h3 className="font-serif text-4xl italic mb-4">Falta</h3>
+            {/* SECCIÓN CUENTA REGRESIVA ESTILO CARD */}
+            <section className="py-32 px-6 relative flex justify-center">
+               <div className="w-full max-w-4xl bg-white/5 border border-white/10 rounded-[3rem] p-16 text-center backdrop-blur-sm relative overflow-hidden">
+                  <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#d1b06b]/5 rounded-full blur-3xl" />
+                  <h3 className="font-serif text-5xl italic mb-10 text-[#d1b06b]">Solo faltan...</h3>
                   <Countdown />
-                  <Heart fill="#d1b06b" className="text-[#d1b06b] mx-auto mt-8 opacity-40" size={20} />
+                  <div className="mt-16 flex justify-center">
+                    <button className="flex items-center gap-3 px-8 py-3 border border-[#d1b06b]/30 text-[#d1b06b] rounded-full text-[10px] uppercase tracking-widest hover:bg-[#d1b06b] hover:text-[#06140d] transition-all">
+                      <Calendar size={14} /> Agendar en mi calendario
+                    </button>
+                  </div>
                </div>
             </section>
 
-            {/* INVITADOS PERSONALIZADOS */}
-            <section className="py-20 text-center px-6">
-                <div className="bg-[#d1b06b] text-[#06140d] w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-2xl">
-                   {invitado?.pases || "?"}
-                </div>
-                <h3 className="uppercase tracking-[0.3em] text-[11px] font-bold text-[#d1b06b] mb-4">Invitados</h3>
-                <p className="font-serif italic text-3xl md:text-5xl text-stone-200 whitespace-pre-line leading-snug">
-                   {invitado?.nombre_completo?.replace(' y ', ' \n & \n ') || "Nuestra Familia"}
-                </p>
-                <p className="text-[#d1b06b] mt-8 font-serif italic italic opacity-70">Tu presencia es lo más importante. ¡No faltes!</p>
+            {/* INVITADOS PERSONALIZADOS - DISEÑO FIXDATE */}
+            <section className="py-24 text-center px-6 max-w-3xl mx-auto">
+                <motion.div whileInView={{ opacity: [0, 1], y: [20, 0] }}>
+                  <div className="bg-[#d1b06b] text-[#06140d] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-8 text-3xl font-bold shadow-[0_0_30px_rgba(209,176,107,0.3)]">
+                    {invitado?.pases || "?"}
+                  </div>
+                  <h3 className="uppercase tracking-[0.4em] text-[12px] font-bold text-[#d1b06b] mb-6">Pases reservados para</h3>
+                  <p className="font-serif italic text-4xl md:text-6xl text-stone-100 whitespace-pre-line leading-[1.1] mb-10">
+                    {invitado?.nombre_completo?.replace(' y ', ' \n & \n ') || "Familia y Amigos"}
+                  </p>
+                  <div className="h-[1px] w-40 bg-gradient-to-r from-transparent via-[#d1b06b]/40 to-transparent mx-auto" />
+                </motion.div>
             </section>
 
-            {/* CARRUSEL DE FOTOS VINTAGE */}
-            <section className="py-24">
-               <div className="text-center mb-16 px-6">
-                  <Camera className="mx-auto text-[#d1b06b] mb-4 opacity-50" size={30} />
-                  <h3 className="font-serif text-5xl italic mb-2">Retratos de Nuestro Amor</h3>
-                  <p className="text-stone-500 text-sm">Un minuto, un segundo, un instante que queda en la eternidad</p>
+            {/* GALERÍA VINTAGE */}
+            <section className="py-32">
+               <div className="text-center mb-20 px-6">
+                  <Camera className="mx-auto text-[#d1b06b] mb-6 opacity-40" size={32} />
+                  <h3 className="font-serif text-6xl italic mb-4">Nuestra Historia</h3>
+                  <p className="text-stone-500 tracking-widest text-xs uppercase">Capturando momentos eternos</p>
                </div>
-               <div className="flex gap-6 overflow-x-auto px-6 no-scrollbar snap-x snap-mandatory">
+               <div className="flex gap-8 overflow-x-auto px-8 no-scrollbar snap-x snap-mandatory">
                   {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="min-w-[280px] md:min-w-[400px] aspect-[3/4] bg-stone-900 rounded-lg snap-center overflow-hidden border-8 border-white/5 shadow-2xl relative grayscale hover:grayscale-0 transition-all duration-700">
-                       <div className="absolute inset-0 flex items-center justify-center text-stone-700 italic">Foto {i}</div>
-                    </div>
+                    <motion.div 
+                      key={i} 
+                      whileHover={{ rotate: 0, scale: 1.02 }}
+                      className="min-w-[300px] md:min-w-[420px] aspect-[4/5] bg-stone-900 rounded-2xl snap-center overflow-hidden border-[12px] border-white shadow-2xl relative rotate-2 transition-all duration-500"
+                    >
+                       <div className="absolute inset-0 bg-stone-800 flex items-center justify-center text-stone-600 font-serif italic">Tu Foto Aquí</div>
+                       <div className="absolute bottom-4 right-4 text-black/20 font-serif italic text-sm">#Carlos&Joselyn</div>
+                    </motion.div>
                   ))}
                </div>
             </section>
 
-            {/* SECCIÓN REGALOS (ESTILO BOTÓN) */}
-            <section className="max-w-4xl mx-auto px-6 py-20">
-               <div className="text-center p-12 border border-[#d1b06b]/20 rounded-[3rem] bg-white/5">
-                  <h3 className="font-serif text-4xl mb-4 italic">Regalos</h3>
-                  <p className="text-stone-400 font-serif italic text-lg mb-8 max-w-md mx-auto">
-                    Si deseas regalarnos algo más que tu hermosa presencia...
-                  </p>
-                  <div className="mx-auto w-16 h-16 border border-[#d1b06b]/30 rounded-full flex items-center justify-center mb-8">
-                     <Gift className="text-[#d1b06b]" size={24} />
+            {/* UBICACIÓN - DISEÑO FIXDATE */}
+            <section className="max-w-5xl mx-auto px-6 py-24">
+               <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-white/5 border border-white/10 p-12 rounded-[2.5rem] text-center hover:border-[#d1b06b]/50 transition-colors">
+                     <MapPin className="mx-auto text-[#d1b06b] mb-6" size={32} />
+                     <h4 className="font-serif text-4xl italic mb-4">Ubicación</h4>
+                     <p className="text-stone-400 text-lg mb-8 font-serif">Luna Azul, Rita de Pococí, Limón.</p>
+                     <a 
+                        href="https://maps.google.com" target="_blank"
+                        className="inline-block px-10 py-4 bg-[#d1b06b] text-[#06140d] rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-lg"
+                     >
+                        Ver en el Mapa
+                     </a>
                   </div>
-                  <button className="px-12 py-4 border border-[#d1b06b] text-[#d1b06b] rounded-full text-xs tracking-widest uppercase font-bold hover:bg-[#d1b06b] hover:text-[#06140d] transition-all">
-                     Ver más
-                  </button>
+                  <div className="bg-white/5 border border-white/10 p-12 rounded-[2.5rem] text-center hover:border-[#d1b06b]/50 transition-colors">
+                     <Shirt className="mx-auto text-[#d1b06b] mb-6" size={32} />
+                     <h4 className="font-serif text-4xl italic mb-4">Código de Vestimenta</h4>
+                     <p className="text-[#d1b06b] font-bold tracking-[0.2em] text-xs uppercase mb-2">Formal - Guayabera</p>
+                     <p className="text-stone-400 font-serif italic">Nos encantaría verte lucir tus mejores galas.</p>
+                  </div>
+               </div>
+            </section>
+
+            {/* SECCIÓN REGALOS */}
+            <section className="max-w-4xl mx-auto px-6 py-20">
+               <div className="text-center p-16 border-2 border-dashed border-[#d1b06b]/20 rounded-[4rem] relative overflow-hidden">
+                  <Gift className="mx-auto text-[#d1b06b] mb-8" size={40} />
+                  <h3 className="font-serif text-5xl mb-6 italic">Lluvia de Sobres</h3>
+                  <p className="text-stone-400 font-serif italic text-xl leading-relaxed max-w-lg mx-auto mb-10">
+                    "Vuestra presencia es nuestro mejor regalo, pero si deseáis tener un detalle con nosotros, contaremos con una lluvia de sobres el día del evento."
+                  </p>
+                  <div className="w-12 h-[1px] bg-[#d1b06b]/30 mx-auto" />
+               </div>
+            </section>
+
+            {/* RSVP - CONFIRMACIÓN INTERACTIVA */}
+            <section className="max-w-lg mx-auto px-6 py-32">
+               <div className="bg-[#05100a] p-12 rounded-[3.5rem] border border-[#d1b06b]/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-center relative">
+                  {confirmado && (
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-6 -right-6 bg-green-500 text-white p-4 rounded-full shadow-xl">
+                      <CheckCircle2 size={32} />
+                    </motion.div>
+                  )}
+                  <Heart className="mx-auto text-[#d1b06b] mb-8" fill="#d1b06b" size={32} />
+                  <h3 className="font-serif text-5xl mb-4 italic">¿Nos acompañas?</h3>
+                  <p className="text-stone-500 text-[10px] tracking-[0.3em] uppercase mb-12">Confirmar antes del 1 de Diciembre</p>
+                  
+                  <div className="space-y-8">
+                    <div className="py-6 border-b border-white/10 font-serif italic text-3xl text-stone-200">
+                       {invitado?.nombre_completo || "Invitado Especial"}
+                    </div>
+                    
+                    <button 
+                      onClick={handleConfirmar}
+                      disabled={cargando || confirmado || !invitado}
+                      className={`w-full py-5 rounded-2xl font-bold tracking-[0.2em] text-[11px] uppercase transition-all shadow-xl ${
+                        confirmado 
+                        ? 'bg-green-600/20 text-green-400 border border-green-600/50 cursor-default' 
+                        : 'bg-[#d1b06b] text-[#06140d] hover:bg-white active:scale-95 shadow-[#d1b06b]/10'
+                      }`}
+                    >
+                      {cargando ? 'Procesando...' : confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}
+                    </button>
+                    {!invitado && <p className="text-[10px] text-red-400/60 italic uppercase tracking-widest">Enlace de invitado no detectado</p>}
+                  </div>
                </div>
             </section>
 
