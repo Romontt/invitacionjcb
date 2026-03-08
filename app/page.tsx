@@ -36,7 +36,7 @@ const Countdown = () => {
           >
             {value}
           </motion.div>
-          <div className="text-[9px] uppercase tracking-[0.3em] text-stone-400 group-hover:text-[#d1b06b] transition-colors">
+          <div className="text-[9px] uppercase tracking-[0.3em] text-stone-400 group-hover:text-[#d1b06b] transition-colors uppercase font-bold">
             {label}
           </div>
         </div>
@@ -74,29 +74,28 @@ export default function InvitacionPremium() {
     const { error } = await supabase.from('invitados').update({ confirmado: true }).eq('id', invitado.id);
     if (!error) {
       setConfirmado(true);
-      alert("¡Gracias por confirmar! Te esperamos.");
     }
     setCargando(false);
   };
 
   return (
-    <main className="min-h-screen bg-[#06140d] text-[#f7f5f0] selection:bg-[#d1b06b]/30 overflow-x-hidden">
+    <main className="min-h-screen bg-[#06140d] text-[#f7f5f0] selection:bg-[#722f37]/50 overflow-x-hidden">
       <audio ref={audioRef} src="/music.mp3" loop />
 
       <AnimatePresence mode="wait">
         {paso === 'landing' && (
-          <motion.div key="landing" exit={{ opacity: 0, scale: 1.1 }} className="h-screen flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] text-center p-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/40" />
+          <motion.div key="landing" exit={{ opacity: 0, scale: 1.1 }} className="h-screen flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] text-center p-6 relative">
+            <div className="absolute inset-0 bg-black/50" />
             <motion.div 
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-              className="relative z-10 space-y-10 border border-[#d1b06b]/20 p-16 rounded-[2rem] bg-[#06140d]/60 backdrop-blur-xl shadow-2xl"
+              className="relative z-10 space-y-10 border border-[#d1b06b]/30 p-12 md:p-16 rounded-[2rem] bg-[#06140d]/80 backdrop-blur-xl shadow-2xl"
             >
-              <div className="space-y-2">
-                <span className="text-[#d1b06b] tracking-[0.5em] text-[10px] uppercase block mb-4">Estás invitado a</span>
-                <h1 className="font-cursive text-7xl md:text-8xl text-[#d1b06b]">Carlos & Joselyn</h1>
+              <div className="space-y-4">
+                <span className="text-[#d1b06b] tracking-[0.5em] text-[10px] uppercase block">Reserva la Fecha</span>
+                <h1 className="font-cursive text-7xl md:text-8xl text-[#d1b06b] drop-shadow-lg">Carlos & Joselyn</h1>
               </div>
-              <button onClick={() => entrar(true)} className="flex items-center gap-4 px-12 py-5 bg-[#d1b06b] text-[#06140d] rounded-full mx-auto font-bold tracking-[0.2em] uppercase text-xs hover:bg-white hover:scale-105 transition-all shadow-lg shadow-[#d1b06b]/20">
-                <Volume2 size={18} /> Abrir Experiencia
+              <button onClick={() => entrar(true)} className="flex items-center gap-4 px-12 py-5 bg-[#722f37] text-white rounded-full mx-auto font-bold tracking-[0.2em] uppercase text-[10px] hover:bg-[#d1b06b] hover:text-[#06140d] transition-all shadow-xl shadow-black/40 border border-white/10">
+                <Volume2 size={16} /> Abrir Invitación
               </button>
             </motion.div>
           </motion.div>
@@ -105,142 +104,98 @@ export default function InvitacionPremium() {
         {paso === 'invitacion' && (
           <motion.div key="invitacion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-32">
             
-            {/* HERO VINTAGE MEJORADO */}
+            {/* HERO VINTAGE VINO Y DORADO */}
             <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
                <div className="absolute inset-0 z-0">
-                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80" className="w-full h-full object-cover opacity-40 scale-105" alt="Boda" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-[#06140d]" />
+                  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80" className="w-full h-full object-cover opacity-30" alt="Boda" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#722f37]/40 via-transparent to-[#06140d]" />
                </div>
 
-               <motion.div initial={{ y: 40, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 1.5 }} className="relative z-10">
-                  <span className="text-[#d1b06b] tracking-[0.6em] text-[11px] uppercase mb-8 block">19 de Diciembre · 2026</span>
-                  <h2 className="font-serif text-7xl md:text-[11rem] mb-6 font-light leading-none">
-                    Carlos <span className="text-[#d1b06b] italic block md:inline md:mx-4">&</span> Joselyn
+               <motion.div initial={{ y: 40, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 1.2 }} className="relative z-10">
+                  <span className="text-[#d1b06b] tracking-[0.6em] text-[11px] uppercase mb-8 block">19 . 12 . 2026</span>
+                  <h2 className="font-serif text-6xl md:text-[10rem] mb-6 font-light leading-none">
+                    Carlos <span className="text-[#722f37] italic block md:inline md:mx-4 drop-shadow-sm">&</span> Joselyn
                   </h2>
-                  <div className="w-24 h-[1px] bg-[#d1b06b]/50 mx-auto my-10" />
-                  <p className="font-serif italic text-stone-200 text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed px-4 drop-shadow-lg">
-                    "Donde hay amor, hay vida."
+                  <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b] to-transparent mx-auto my-10" />
+                  <p className="font-serif italic text-stone-200 text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed px-4 italic">
+                    "Todos somos mortales, hasta el primer beso y la segunda copa de vino"
                   </p>
-                  <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2.5 }} className="mt-20 text-[#d1b06b]/40 flex flex-col items-center gap-2">
-                     <span className="text-[9px] tracking-[0.3em] uppercase">Desliza</span>
-                     <ChevronDown size={28} />
+                  <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2.5 }} className="mt-20 text-[#d1b06b]/50">
+                     <ChevronDown size={32} className="mx-auto" />
                   </motion.div>
                </motion.div>
             </section>
 
-            {/* SECCIÓN CUENTA REGRESIVA ESTILO CARD */}
-            <section className="py-32 px-6 relative flex justify-center">
-               <div className="w-full max-w-4xl bg-white/5 border border-white/10 rounded-[3rem] p-16 text-center backdrop-blur-sm relative overflow-hidden">
-                  <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#d1b06b]/5 rounded-full blur-3xl" />
+            {/* SECCIÓN CUENTA REGRESIVA - CARD VINO */}
+            <section className="py-24 px-6 relative flex justify-center">
+               <div className="w-full max-w-4xl bg-[#722f37]/10 border border-[#d1b06b]/20 rounded-[3rem] p-12 md:p-20 text-center backdrop-blur-md relative">
+                  <div className="absolute top-8 left-8 right-8 bottom-8 border border-[#d1b06b]/10 rounded-[2.5rem] pointer-events-none" />
                   <h3 className="font-serif text-5xl italic mb-10 text-[#d1b06b]">Solo faltan...</h3>
                   <Countdown />
                   <div className="mt-16 flex justify-center">
-                    <button className="flex items-center gap-3 px-8 py-3 border border-[#d1b06b]/30 text-[#d1b06b] rounded-full text-[10px] uppercase tracking-widest hover:bg-[#d1b06b] hover:text-[#06140d] transition-all">
-                      <Calendar size={14} /> Agendar en mi calendario
+                    <button className="flex items-center gap-3 px-8 py-3 bg-[#722f37] text-white rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:text-[#722f37] transition-all shadow-lg font-bold">
+                      <Calendar size={14} /> Agendar Evento
                     </button>
                   </div>
                </div>
             </section>
 
-            {/* INVITADOS PERSONALIZADOS - DISEÑO FIXDATE */}
+            {/* INVITADOS PERSONALIZADOS */}
             <section className="py-24 text-center px-6 max-w-3xl mx-auto">
-                <motion.div whileInView={{ opacity: [0, 1], y: [20, 0] }}>
-                  <div className="bg-[#d1b06b] text-[#06140d] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-8 text-3xl font-bold shadow-[0_0_30px_rgba(209,176,107,0.3)]">
-                    {invitado?.pases || "?"}
-                  </div>
-                  <h3 className="uppercase tracking-[0.4em] text-[12px] font-bold text-[#d1b06b] mb-6">Pases reservados para</h3>
-                  <p className="font-serif italic text-4xl md:text-6xl text-stone-100 whitespace-pre-line leading-[1.1] mb-10">
-                    {invitado?.nombre_completo?.replace(' y ', ' \n & \n ') || "Familia y Amigos"}
-                  </p>
-                  <div className="h-[1px] w-40 bg-gradient-to-r from-transparent via-[#d1b06b]/40 to-transparent mx-auto" />
-                </motion.div>
+                <div className="bg-[#722f37] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-8 text-3xl font-bold border border-[#d1b06b]/50 shadow-2xl">
+                  {invitado?.pases || "?"}
+                </div>
+                <h3 className="uppercase tracking-[0.4em] text-[11px] font-bold text-[#d1b06b] mb-6">Invitados de Honor</h3>
+                <p className="font-serif italic text-4xl md:text-6xl text-stone-100 whitespace-pre-line leading-tight">
+                  {invitado?.nombre_completo?.replace(' y ', ' \n & \n ') || "Nuestra Familia"}
+                </p>
             </section>
 
-            {/* GALERÍA VINTAGE */}
-            <section className="py-32">
-               <div className="text-center mb-20 px-6">
-                  <Camera className="mx-auto text-[#d1b06b] mb-6 opacity-40" size={32} />
-                  <h3 className="font-serif text-6xl italic mb-4">Nuestra Historia</h3>
-                  <p className="text-stone-500 tracking-widest text-xs uppercase">Capturando momentos eternos</p>
-               </div>
-               <div className="flex gap-8 overflow-x-auto px-8 no-scrollbar snap-x snap-mandatory">
-                  {[1, 2, 3, 4].map(i => (
-                    <motion.div 
-                      key={i} 
-                      whileHover={{ rotate: 0, scale: 1.02 }}
-                      className="min-w-[300px] md:min-w-[420px] aspect-[4/5] bg-stone-900 rounded-2xl snap-center overflow-hidden border-[12px] border-white shadow-2xl relative rotate-2 transition-all duration-500"
-                    >
-                       <div className="absolute inset-0 bg-stone-800 flex items-center justify-center text-stone-600 font-serif italic">Tu Foto Aquí</div>
-                       <div className="absolute bottom-4 right-4 text-black/20 font-serif italic text-sm">#Carlos&Joselyn</div>
-                    </motion.div>
-                  ))}
-               </div>
+            {/* INFO GRID - ACENTOS VINO */}
+            <section className="max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+               {[
+                 { icon: <MapPin />, title: "Ubicación", desc: "Luna Azul, Pococí", action: "Ver Mapa" },
+                 { icon: <Clock />, title: "Hora", desc: "18:00 HRS", action: "Agendar" },
+                 { icon: <Shirt />, title: "Dresscode", desc: "Formal - Guayabera", action: "Ver más" },
+                 { icon: <Gift />, title: "Regalos", desc: "Lluvia de Sobres", action: "Ver más" }
+               ].map((item, i) => (
+                 <div key={i} className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] text-center group hover:bg-[#722f37]/10 transition-all duration-500">
+                    <div className="text-[#d1b06b] flex justify-center mb-6 group-hover:scale-110 transition-transform">
+                      {React.cloneElement(item.icon as React.ReactElement, { size: 32 })}
+                    </div>
+                    <h4 className="font-serif text-2xl italic mb-2 text-white">{item.title}</h4>
+                    <p className="text-stone-400 text-sm mb-8 font-serif italic">{item.desc}</p>
+                    <button className="text-[10px] uppercase tracking-widest text-[#d1b06b] border-b border-[#d1b06b]/30 pb-1 hover:text-white hover:border-white transition-all font-bold">
+                       {item.action}
+                    </button>
+                 </div>
+               ))}
             </section>
 
-            {/* UBICACIÓN - DISEÑO FIXDATE */}
-            <section className="max-w-5xl mx-auto px-6 py-24">
-               <div className="grid md:grid-cols-2 gap-8">
-                  <div className="bg-white/5 border border-white/10 p-12 rounded-[2.5rem] text-center hover:border-[#d1b06b]/50 transition-colors">
-                     <MapPin className="mx-auto text-[#d1b06b] mb-6" size={32} />
-                     <h4 className="font-serif text-4xl italic mb-4">Ubicación</h4>
-                     <p className="text-stone-400 text-lg mb-8 font-serif">Luna Azul, Rita de Pococí, Limón.</p>
-                     <a 
-                        href="https://maps.google.com" target="_blank"
-                        className="inline-block px-10 py-4 bg-[#d1b06b] text-[#06140d] rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-lg"
-                     >
-                        Ver en el Mapa
-                     </a>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 p-12 rounded-[2.5rem] text-center hover:border-[#d1b06b]/50 transition-colors">
-                     <Shirt className="mx-auto text-[#d1b06b] mb-6" size={32} />
-                     <h4 className="font-serif text-4xl italic mb-4">Código de Vestimenta</h4>
-                     <p className="text-[#d1b06b] font-bold tracking-[0.2em] text-xs uppercase mb-2">Formal - Guayabera</p>
-                     <p className="text-stone-400 font-serif italic">Nos encantaría verte lucir tus mejores galas.</p>
-                  </div>
-               </div>
-            </section>
-
-            {/* SECCIÓN REGALOS */}
-            <section className="max-w-4xl mx-auto px-6 py-20">
-               <div className="text-center p-16 border-2 border-dashed border-[#d1b06b]/20 rounded-[4rem] relative overflow-hidden">
-                  <Gift className="mx-auto text-[#d1b06b] mb-8" size={40} />
-                  <h3 className="font-serif text-5xl mb-6 italic">Lluvia de Sobres</h3>
-                  <p className="text-stone-400 font-serif italic text-xl leading-relaxed max-w-lg mx-auto mb-10">
-                    "Vuestra presencia es nuestro mejor regalo, pero si deseáis tener un detalle con nosotros, contaremos con una lluvia de sobres el día del evento."
-                  </p>
-                  <div className="w-12 h-[1px] bg-[#d1b06b]/30 mx-auto" />
-               </div>
-            </section>
-
-            {/* RSVP - CONFIRMACIÓN INTERACTIVA */}
-            <section className="max-w-lg mx-auto px-6 py-32">
-               <div className="bg-[#05100a] p-12 rounded-[3.5rem] border border-[#d1b06b]/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-center relative">
-                  {confirmado && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-6 -right-6 bg-green-500 text-white p-4 rounded-full shadow-xl">
-                      <CheckCircle2 size={32} />
-                    </motion.div>
-                  )}
-                  <Heart className="mx-auto text-[#d1b06b] mb-8" fill="#d1b06b" size={32} />
-                  <h3 className="font-serif text-5xl mb-4 italic">¿Nos acompañas?</h3>
-                  <p className="text-stone-500 text-[10px] tracking-[0.3em] uppercase mb-12">Confirmar antes del 1 de Diciembre</p>
+            {/* RSVP - VINO PROFUNDO */}
+            <section className="max-w-lg mx-auto px-6 py-20">
+               <div className="bg-[#05100a] p-12 rounded-[4rem] border border-[#722f37] shadow-[0_30px_60px_rgba(0,0,0,0.6)] text-center relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-2 bg-[#722f37]" />
+                  <Heart className="mx-auto text-[#722f37] mb-8" fill="#722f37" size={40} />
+                  <h3 className="font-serif text-5xl mb-4 italic text-[#d1b06b]">¿Nos acompañas?</h3>
+                  <p className="text-stone-500 text-[9px] tracking-[0.4em] uppercase mb-12">Confirmar antes del 01.12</p>
                   
                   <div className="space-y-8">
-                    <div className="py-6 border-b border-white/10 font-serif italic text-3xl text-stone-200">
+                    <div className="py-6 border-y border-white/5 font-serif italic text-3xl text-stone-200">
                        {invitado?.nombre_completo || "Invitado Especial"}
                     </div>
                     
                     <button 
                       onClick={handleConfirmar}
                       disabled={cargando || confirmado || !invitado}
-                      className={`w-full py-5 rounded-2xl font-bold tracking-[0.2em] text-[11px] uppercase transition-all shadow-xl ${
+                      className={`w-full py-5 rounded-full font-bold tracking-[0.2em] text-[10px] uppercase transition-all ${
                         confirmado 
-                        ? 'bg-green-600/20 text-green-400 border border-green-600/50 cursor-default' 
-                        : 'bg-[#d1b06b] text-[#06140d] hover:bg-white active:scale-95 shadow-[#d1b06b]/10'
+                        ? 'bg-green-900/40 text-green-400 border border-green-500/30' 
+                        : 'bg-[#722f37] text-white hover:bg-[#d1b06b] hover:text-[#06140d] shadow-xl'
                       }`}
                     >
-                      {cargando ? 'Procesando...' : confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}
+                      {cargando ? 'Enviando...' : confirmado ? '¡Confirmado!' : 'Confirmar Asistencia'}
                     </button>
-                    {!invitado && <p className="text-[10px] text-red-400/60 italic uppercase tracking-widest">Enlace de invitado no detectado</p>}
                   </div>
                </div>
             </section>
