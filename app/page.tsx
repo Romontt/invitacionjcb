@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Shirt, Gift, Heart, Volume2, Camera, ChevronDown, Calendar, CheckCircle2 } from 'lucide-react';
+import { Clock, MapPin, Shirt, Gift, Heart, Volume2, Camera, ChevronDown, Calendar, CheckCircle2, Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://spriycerzcurnhoznzzr.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6InNwcml5Y2VyemN1cm5ob3puenpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDIwODcsImV4cCI6MjA4ODQ3ODA4N30.90778vaPGPxLdjmcvQFf7_xcnhqi_ukW9fJtG5BlkDc';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// --- NUEVOS ELEMENTOS DECORATIVOS ---
+// --- ELEMENTOS DECORATIVOS ---
 
 const CornerDecoration = ({ className = "" }: { className?: string }) => (
   <div className={`absolute w-12 h-12 pointer-events-none ${className}`}>
@@ -81,11 +81,23 @@ export default function InvitacionPremium() {
     const id = params.get('id');
     if (id) {
       supabase.from('invitados').select('*').eq('id', id).single().then(({ data }) => {
-        setInvitado(data);
-        if (data?.confirmado) setConfirmado(true);
+        if (data) {
+          setInvitado(data);
+          if (data.confirmado) setConfirmado(true);
+        }
       });
     }
   }, []);
+
+  const confirmarAsistencia = async () => {
+    if (!invitado) return;
+    const { error } = await supabase
+      .from('invitados')
+      .update({ confirmado: true })
+      .eq('id', invitado.id);
+    
+    if (!error) setConfirmado(true);
+  };
 
   const entrar = () => {
     setPaso('invitacion');
@@ -156,11 +168,9 @@ export default function InvitacionPremium() {
                </div>
             </section>
 
-            {/* CRONOGRAMA CON LÍNEAS DE CONEXIÓN */}
+            {/* CRONOGRAMA */}
             <section className="py-32 px-6 max-w-7xl mx-auto relative">
-               {/* Línea decorativa vertical en mobile, horizontal en desktop */}
                <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-[1px] bg-[#722f37]/20 z-0" />
-               
                <div className="grid md:grid-cols-2 gap-10 relative z-10">
                   <div className="bg-[#d4b57a] p-14 rounded-[3.5rem] shadow-xl border-t border-l border-white/40 text-center group relative overflow-hidden transition-all duration-700 hover:shadow-2xl">
                      <CornerDecoration className="top-4 right-4 rotate-90 opacity-40" />
@@ -171,7 +181,7 @@ export default function InvitacionPremium() {
                      <div className="h-[2px] w-12 bg-[#722f37]/30 mx-auto mb-4" />
                      <p className="text-[#722f37] text-2xl font-serif mb-1 uppercase tracking-tight">4:00 PM</p>
                      <p className="text-[#06140d]/70 italic mb-10 text-xl font-serif">Luna Azul, Pococí</p>
-                     <a href="https://maps.app.goo.gl/YVPrqBwXVg5Cidzp9" target="_blank" className="relative z-10 inline-block px-12 py-4 bg-[#722f37] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#06140d] transition-all shadow-xl">
+                     <a href="https://maps.app.goo.gl/1" target="_blank" className="relative z-10 inline-block px-12 py-4 bg-[#722f37] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#06140d] transition-all shadow-xl">
                         Ver Ubicación
                      </a>
                   </div>
@@ -190,16 +200,12 @@ export default function InvitacionPremium() {
                </div>
             </section>
 
-            {/* DRESSCODE CON BORDE ONDULADO */}
+            {/* DRESSCODE */}
             <WaveEdge color="#722f37" />
             <section className="py-24 bg-[#722f37] text-white relative">
                <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-                  <div className="flex justify-center gap-2 mb-6">
-                    {[...Array(3)].map((_, i) => <div key={i} className="w-2 h-2 rounded-full bg-[#d1b06b]/40" />)}
-                  </div>
                   <h3 className="font-serif text-6xl italic mb-10 text-[#d1b06b]">Código de Vestimenta</h3>
                   <div className="relative p-14 rounded-[4rem] border-2 border-[#d1b06b]/20 overflow-hidden">
-                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d1b06b]/30 to-transparent" />
                      <p className="text-4xl font-serif mb-4 italic text-white tracking-wide">Formal</p>
                      <p className="text-stone-300 text-xl font-serif italic mb-4">Caballeros: Guayabera o traje formal</p>
                      <div className="w-8 h-[1px] bg-[#d1b06b]/50 mx-auto mb-4" />
@@ -209,12 +215,10 @@ export default function InvitacionPremium() {
             </section>
             <WaveEdge color="#722f37" flip />
 
-            {/* REGALOS CON ESQUINAS CURVAS ADICIONALES */}
+            {/* REGALOS */}
             <section className="py-32 px-6 text-center">
-               <div className="max-w-4xl mx-auto bg-[#fcf8f1]/50 p-20 rounded-[5rem] border-2 border-dashed border-[#d1b06b]/40 relative group">
-                  <div className="absolute -top-4 -left-4 w-24 h-24 border-t-2 border-l-2 border-[#722f37]/20 rounded-tl-[4rem]" />
-                  <div className="absolute -bottom-4 -right-4 w-24 h-24 border-b-2 border-r-2 border-[#722f37]/20 rounded-br-[4rem]" />
-                  <Gift className="mx-auto text-[#722f37] mb-8 transition-transform group-hover:rotate-12" size={60} />
+               <div className="max-w-4xl mx-auto bg-[#fcf8f1]/50 p-20 rounded-[5rem] border-2 border-dashed border-[#d1b06b]/40 relative group shadow-sm">
+                  <Gift className="mx-auto text-[#722f37] mb-8" size={60} />
                   <h3 className="font-serif text-5xl italic mb-8 text-[#06140d]">Lluvia de Sobres</h3>
                   <p className="text-[#722f37]/80 font-serif italic text-2xl leading-relaxed max-w-2xl mx-auto">
                     "Vuestra presencia es nuestro mejor regalo, pero si deseáis tener un detalle, contaremos con una lluvia de sobres el día del evento."
@@ -222,41 +226,53 @@ export default function InvitacionPremium() {
                </div>
             </section>
 
-            {/* RSVP - CIERRE CON MARCO DE LUJO */}
+            {/* RSVP - CON DETALLES DE INVITADO Y PASES */}
             <section className="py-40 bg-[#d4b57a]/30 px-6 relative">
-               <div className="max-w-xl mx-auto bg-[#fcf8f1] p-16 rounded-[4rem] shadow-2xl border-t-[12px] border-[#722f37] text-center relative overflow-hidden">
+               <div className="max-w-xl mx-auto bg-[#fcf8f1] p-12 md:p-16 rounded-[4rem] shadow-2xl border-t-[12px] border-[#722f37] text-center relative overflow-hidden">
                   <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#d1b06b]/10 rounded-[3.5rem] pointer-events-none" />
-                  <Heart className="mx-auto text-[#722f37] mb-10" fill="#722f37" size={44} />
-                  <h3 className="font-serif text-6xl italic mb-6 text-[#06140d]">¿Nos acompañas?</h3>
-                  <div className="flex items-center justify-center gap-3 mb-12">
-                    <div className="h-[1px] w-8 bg-[#8c6d31]/30" />
-                    <p className="text-[#8c6d31] text-[10px] tracking-[0.4em] uppercase font-bold">Confirmar antes del 1 Dic</p>
-                    <div className="h-[1px] w-8 bg-[#8c6d31]/30" />
+                  <Heart className="mx-auto text-[#722f37] mb-8" fill="#722f37" size={44} />
+                  
+                  <h3 className="font-serif text-5xl italic mb-4 text-[#06140d]">¿Nos acompañas?</h3>
+                  <p className="text-[#8c6d31] text-[10px] tracking-[0.4em] uppercase font-bold mb-10 text-center">Por favor confirmar antes del 1 de Diciembre</p>
+                  
+                  {/* TARJETA DE PASES DINÁMICA */}
+                  <div className="bg-[#e2c792]/20 border-2 border-dashed border-[#d1b06b]/40 p-8 rounded-[2.5rem] mb-12 relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <Users size={80} className="text-[#722f37]" />
+                     </div>
+                     
+                     <span className="text-[10px] uppercase tracking-[0.3em] text-[#8c6d31] font-bold block mb-4">Invitación para:</span>
+                     <div className="font-serif italic text-4xl text-[#722f37] mb-6 px-2 leading-tight">
+                        {invitado?.nombre_completo || "Familia y Amigos"}
+                     </div>
+                     
+                     <div className="inline-flex items-center gap-3 bg-[#722f37] text-white px-8 py-3 rounded-full shadow-lg">
+                        <Users size={16} />
+                        <span className="text-xs font-bold uppercase tracking-[0.2em]">
+                           {invitado?.pases || 0} {invitado?.pases === 1 ? 'Pase Personal' : 'Lugares Reservados'}
+                        </span>
+                     </div>
                   </div>
                   
-                  <div className="space-y-10">
-                    <div className="relative py-8 font-serif italic text-4xl text-[#722f37]">
-                       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b] to-transparent" />
-                       {invitado?.nombre_completo || "Familia y Amigos"}
-                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b] to-transparent" />
-                    </div>
-                    
-                    <button 
-                      onClick={() => setConfirmado(true)}
-                      className={`w-full py-6 rounded-full font-bold tracking-[0.3em] text-[12px] uppercase transition-all shadow-2xl relative overflow-hidden group ${
-                        confirmado 
-                        ? 'bg-green-700 text-white cursor-default' 
-                        : 'bg-[#722f37] text-white hover:bg-[#06140d]'
-                      }`}
-                    >
-                      <span className="relative z-10">{confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}</span>
-                    </button>
-                  </div>
+                  <button 
+                    onClick={confirmarAsistencia}
+                    disabled={confirmado}
+                    className={`w-full py-6 rounded-full font-bold tracking-[0.3em] text-[12px] uppercase transition-all shadow-xl relative overflow-hidden group ${
+                      confirmado 
+                      ? 'bg-green-700 text-white cursor-default scale-95 opacity-90' 
+                      : 'bg-[#722f37] text-white hover:bg-[#06140d] active:scale-95'
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-3">
+                       {confirmado && <CheckCircle2 size={18} />}
+                       {confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}
+                    </span>
+                  </button>
                </div>
             </section>
 
             {/* FOOTER */}
-            <footer className="py-16 text-center relative overflow-hidden">
+            <footer className="py-16 text-center relative">
                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b]/40 to-transparent" />
                <p className="text-[#8c6d31] font-serif italic text-xl mb-2">Hecho con amor</p>
                <p className="text-[#722f37] font-serif font-bold tracking-widest text-sm uppercase">Carlos & Joselyn 2026</p>
