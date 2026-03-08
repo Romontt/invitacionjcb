@@ -42,18 +42,29 @@ const Countdown = () => {
   const [timeLeft, setTimeLeft] = useState({ días: 0, hs: 0, min: 0, seg: 0 });
 
   useEffect(() => {
-    const target = new Date("December 19, 2026 16:00:00").getTime();
-    const interval = setInterval(() => {
-      const distance = target - new Date().getTime();
-      if (distance < 0) return clearInterval(interval);
-      setTimeLeft({
-        días: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hs: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        min: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seg: Math.floor((distance % (1000 * 60)) / 1000),
-      });
-    }, 1000);
-    return () => clearInterval(interval);
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    
+    console.log("ID detectado en URL:", id); // Para ver si el ID está llegando
+
+    if (id) {
+      supabase
+        .from('invitados')
+        .select('*')
+        .eq('id', id)
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("Error de Supabase:", error.message);
+            return;
+          }
+          if (data) {
+            console.log("Datos del invitado cargados:", data);
+            setInvitado(data);
+            if (data.confirmado) setConfirmado(true);
+          }
+        });
+    }
   }, []);
 
   return (
