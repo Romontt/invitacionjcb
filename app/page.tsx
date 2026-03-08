@@ -5,7 +5,7 @@ import { Clock, MapPin, Shirt, Gift, Heart, Volume2, ChevronDown, CheckCircle2, 
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://spriycerzcurnhoznzzr.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6InNwcml5Y2VyemN1cm5ob3puenpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDIwODcsImV4cCI6MjA4ODQ3ODA4N30.90778vaPGPxLdjmcvQFf7_xcnhqi_ukW9fJtG5BlkDc';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcml5Y2VyemN1cm5ob3puenpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDIwODcsImV4cCI6MjA4ODQ3ODA4N30.90778vaPGPxLdjmcvQFf7_xcnhqi_ukW9fJtG5BlkDc';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // --- ELEMENTOS DECORATIVOS ---
