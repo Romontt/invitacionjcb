@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, MapPin, Shirt, Gift, Heart, Volume2, ChevronDown, CheckCircle2, Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
+import { Countdown } from './Countdown';
 
 const supabaseUrl = 'https://spriycerzcurnhoznzzr.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6InNwcml5Y2VyemN1cm5ob3puenpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDIwODcsImV4cCI6MjA4ODQ3ODA4N30.90778vaPGPxLdjmcvQFf7_xcnhqi_ukW9fJtG5BlkDc';
@@ -37,38 +38,6 @@ const WaveEdge = ({ color = "#e2c792", flip = false }: { color?: string, flip?: 
     </svg>
   </div>
 );
-
-const Countdown = () => {
-  const [timeLeft, setTimeLeft] = useState({ días: 0, hs: 0, min: 0, seg: 0 });
-
-  useEffect(() => {
-    const target = new Date("December 19, 2026 16:00:00").getTime();
-    const interval = setInterval(() => {
-      const distance = target - new Date().getTime();
-      if (distance < 0) return clearInterval(interval);
-      setTimeLeft({
-        días: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hs: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        min: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seg: Math.floor((distance % (1000 * 60)) / 1000),
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flex gap-4 md:gap-10 justify-center relative">
-      <div className="absolute -top-6 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b]/40 to-transparent" />
-      {Object.entries(timeLeft).map(([label, value]) => (
-        <div key={label} className="text-center group">
-          <div className="text-[#722f37] text-5xl font-serif mb-1 group-hover:scale-110 transition-transform duration-500 drop-shadow-sm">{value}</div>
-          <div className="text-[10px] uppercase tracking-[0.3em] text-[#8c6d31] font-bold">{label}</div>
-        </div>
-      ))}
-      <div className="absolute -bottom-6 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#d1b06b]/40 to-transparent" />
-    </div>
-  );
-};
 
 export default function InvitacionPremium() {
   const [paso, setPaso] = useState('landing'); 
