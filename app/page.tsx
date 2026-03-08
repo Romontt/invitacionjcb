@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Shirt, Gift, Heart, Volume2, Camera, ChevronDown, Calendar, CheckCircle2, Users } from 'lucide-react';
+import { Clock, MapPin, Shirt, Gift, Heart, Volume2, ChevronDown, CheckCircle2, Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://spriycerzcurnhoznzzr.supabase.co';
@@ -181,7 +181,7 @@ export default function InvitacionPremium() {
                      <div className="h-[2px] w-12 bg-[#722f37]/30 mx-auto mb-4" />
                      <p className="text-[#722f37] text-2xl font-serif mb-1 uppercase tracking-tight">4:00 PM</p>
                      <p className="text-[#06140d]/70 italic mb-10 text-xl font-serif">Luna Azul, Pococí</p>
-                     <a href="https://maps.app.goo.gl/1" target="_blank" className="relative z-10 inline-block px-12 py-4 bg-[#722f37] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#06140d] transition-all shadow-xl">
+                     <a href="https://maps.google.com" target="_blank" className="relative z-10 inline-block px-12 py-4 bg-[#722f37] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-[#06140d] transition-all shadow-xl">
                         Ver Ubicación
                      </a>
                   </div>
@@ -226,48 +226,61 @@ export default function InvitacionPremium() {
                </div>
             </section>
 
-            {/* RSVP - CON DETALLES DE INVITADO Y PASES */}
+            {/* RSVP - PERSONALIZADO (NOMBRES ARRIBA) */}
             <section className="py-40 bg-[#d4b57a]/30 px-6 relative">
-               <div className="max-w-xl mx-auto bg-[#fcf8f1] p-12 md:p-16 rounded-[4rem] shadow-2xl border-t-[12px] border-[#722f37] text-center relative overflow-hidden">
+               <div className="max-w-2xl mx-auto bg-[#fcf8f1] p-12 md:p-20 rounded-[4rem] shadow-2xl border-t-[12px] border-[#722f37] text-center relative overflow-hidden">
                   <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#d1b06b]/10 rounded-[3.5rem] pointer-events-none" />
-                  <Heart className="mx-auto text-[#722f37] mb-8" fill="#722f37" size={44} />
                   
-                  <h3 className="font-serif text-5xl italic mb-4 text-[#06140d]">¿Nos acompañas?</h3>
-                  <p className="text-[#8c6d31] text-[10px] tracking-[0.4em] uppercase font-bold mb-10 text-center">Por favor confirmar antes del 1 de Diciembre</p>
-                  
-                  {/* TARJETA DE PASES DINÁMICA */}
-                  <div className="bg-[#e2c792]/20 border-2 border-dashed border-[#d1b06b]/40 p-8 rounded-[2.5rem] mb-12 relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <Users size={80} className="text-[#722f37]" />
-                     </div>
-                     
-                     <span className="text-[10px] uppercase tracking-[0.3em] text-[#8c6d31] font-bold block mb-4">Invitación para:</span>
-                     <div className="font-serif italic text-4xl text-[#722f37] mb-6 px-2 leading-tight">
-                        {invitado?.nombre_completo || "Familia y Amigos"}
-                     </div>
-                     
-                     <div className="inline-flex items-center gap-3 bg-[#722f37] text-white px-8 py-3 rounded-full shadow-lg">
-                        <Users size={16} />
-                        <span className="text-xs font-bold uppercase tracking-[0.2em]">
-                           {invitado?.pases || 0} {invitado?.pases === 1 ? 'Pase Personal' : 'Lugares Reservados'}
-                        </span>
-                     </div>
-                  </div>
-                  
-                  <button 
-                    onClick={confirmarAsistencia}
-                    disabled={confirmado}
-                    className={`w-full py-6 rounded-full font-bold tracking-[0.3em] text-[12px] uppercase transition-all shadow-xl relative overflow-hidden group ${
-                      confirmado 
-                      ? 'bg-green-700 text-white cursor-default scale-95 opacity-90' 
-                      : 'bg-[#722f37] text-white hover:bg-[#06140d] active:scale-95'
-                    }`}
+                  {/* Encabezado de la invitación personalizada */}
+                  <motion.div 
+                     initial={{ y: 20, opacity: 0 }} 
+                     whileInView={{ y: 0, opacity: 1 }}
+                     className="mb-12"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-3">
-                       {confirmado && <CheckCircle2 size={18} />}
-                       {confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}
-                    </span>
-                  </button>
+                     <Heart className="mx-auto text-[#722f37] mb-6" fill="#722f37" size={32} />
+                     <span className="text-[#8c6d31] text-[10px] tracking-[0.5em] uppercase font-bold mb-6 block">Invitado(s) Especial(es)</span>
+                     
+                     <div className="relative inline-block px-8 py-4">
+                        <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[#d1b06b]/40" />
+                        <h2 className="font-serif italic text-5xl md:text-7xl text-[#06140d] leading-tight">
+                           {invitado?.nombre_completo || "Familia y Amigos"}
+                        </h2>
+                        <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[#d1b06b]/40" />
+                     </div>
+
+                     <div className="mt-8 flex items-center justify-center gap-4">
+                        <div className="h-[1px] w-8 bg-[#d1b06b]/30" />
+                        <div className="flex items-center gap-2 text-[#722f37]">
+                           <Users size={18} />
+                           <span className="font-serif italic text-2xl">
+                              {invitado?.pases || 0} {invitado?.pases === 1 ? 'Pase Personal' : 'Lugares Reservados'}
+                           </span>
+                        </div>
+                        <div className="h-[1px] w-8 bg-[#d1b06b]/30" />
+                     </div>
+                  </motion.div>
+
+                  <FloralDivider />
+
+                  <div className="mt-12">
+                     <h3 className="font-serif text-4xl italic mb-3 text-[#06140d]">¿Nos acompañas?</h3>
+                     <p className="text-[#8c6d31] text-[9px] tracking-[0.4em] uppercase font-bold mb-12">Por favor confirma antes del 1 de Diciembre</p>
+                     
+                     <button 
+                       onClick={confirmarAsistencia}
+                       disabled={confirmado}
+                       className={`w-full py-6 rounded-full font-bold tracking-[0.3em] text-[11px] uppercase transition-all shadow-xl relative overflow-hidden group ${
+                         confirmado 
+                         ? 'bg-green-700 text-white cursor-default' 
+                         : 'bg-[#722f37] text-white hover:bg-[#06140d] active:scale-95'
+                       }`}
+                     >
+                        <span className="relative z-10 flex items-center justify-center gap-3">
+                           {confirmado && <CheckCircle2 size={18} />}
+                           {confirmado ? 'Asistencia Confirmada' : 'Confirmar mi Asistencia'}
+                        </span>
+                     </button>
+                  </div>
                </div>
             </section>
 
